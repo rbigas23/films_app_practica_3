@@ -51,8 +51,13 @@ class Persistencia_pelicula_mysql(IPersistencia_pelicula):
         #falta codi
     
     def desa(self,pelicula:Pelicula) -> Pelicula:
-        pass
-        #falta codi
+        cursor = self._conn.cursor()
+        query = "INSERT INTO PELICULA (TITULO, ANYO, PUNTUACION, VOTOS) VALUES (%s, %s, %s, %s);"
+        valors = (pelicula.titol, pelicula.any, pelicula.puntuacio, pelicula.vots)
+        cursor.execute(query, valors)
+        self._conn.commit()
+        cursor.close()
+        return pelicula
     
     def llegeix(self, any: int) -> Pelicula:
         pass
