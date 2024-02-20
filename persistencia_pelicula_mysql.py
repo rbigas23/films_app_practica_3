@@ -4,7 +4,7 @@ from ipersistencia_pelicula import IPersistencia_pelicula
 from pelicula import Pelicula
 from typing  import List
 import mysql.connector
-import logging
+
 
 class Persistencia_pelicula_mysql(IPersistencia_pelicula):
     def __init__(self, credencials) -> None:
@@ -46,23 +46,43 @@ class Persistencia_pelicula_mysql(IPersistencia_pelicula):
             resultat.append(pelicula)
         return resultat
     
-    def totes_pag(self, id=None) -> List[Pelicula]:
-        pass
-        #falta codi
-    
-    def desa(self,pelicula:Pelicula) -> Pelicula:
+    def totes_pag(self, id:int) -> List[Pelicula]:
         cursor = self._conn.cursor()
-        query = "INSERT INTO PELICULA (TITULO, ANYO, PUNTUACION, VOTOS) VALUES (%s, %s, %s, %s);"
-        valors = (pelicula.titol, pelicula.any, pelicula.puntuacio, pelicula.vots)
-        cursor.execute(query, valors)
+        query = f"SELECT * FROM PELICULA WHERE ID > {id} LIMIT 10"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        pelis_list = List[Pelicula]
+        for peli in result:
+            pelis_list.append(Pelicula(peli[1], peli[2], peli[3], peli[4]))
+        return pelis_list
+    
+    def desa(self, pelicula: Pelicula) -> Pelicula:
+        cursor = self._conn.cursor()
+        query = f"INSERT INTO PELICULA (TITULO, ANYO, PUNTUACION, VOTOS) VALUES ({pelicula.titol}, {pelicula.any}, {pelicula.puntuacio}, {pelicula.vots});"
+        cursor.execute(query)
         self._conn.commit()
         cursor.close()
         return pelicula
     
-    def llegeix(self, any: int) -> Pelicula:
-        pass
-        #falta codi
-    
-    def canvia(self,pelicula:Pelicula) -> Pelicula:
-        pass
-        #falta codi
+    def llegeix(self, any: int) -> List[Pelicula]:
+        cursor = self._conn.cursor()
+        query = f"SELECT * FROM PELICULA WHERE ANYO LIKE '{any}'"
+        result = cursor.execute(query)
+        pelis_list = List(Pelicula)
+        for peli in result:
+            pelis_list.append(Pelicula(titol = str(peli[1]), any = str(peli[2]), puntuacio = str(peli[3]), vots = str(peli[4])))
+        return pelis_list
+
+    def canvia(self, info:dict, pelicula:Pelicula) -> Pelicula:
+        cursor = self._conn.cursor()
+        if info["opt"] == "titol":
+            query = f"UPDATE PELICULA SET TITULO={info['value']} WHERE id = {pelicula.id}"
+        elif info["opt"] == "any":
+            query = f"UPDATE PELICULA SET ANYO={info['value']} WHERE id = {pelicula.id}"
+        elif info["opt"] == "punt":
+            query = f"UPDATE PELICULA SET PUNTUACION={info['value']} WHERE id = {pelicula.id}"
+        elif info["opt"] == "vots":
+            query = f"UPDATE PELICULA SET VOTOS={info['value']} WHERE id = {pelicula.id}"
+        cursor.execute(query)
+        self._conn.commit()
+        return pelicula

@@ -4,5 +4,5 @@ base de dades:
     motor: mysql
     host: localhost
     user: dam_app
-    password: 1234
+    password: '1234'
     database: dam_m6

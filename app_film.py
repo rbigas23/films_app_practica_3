@@ -37,7 +37,6 @@ def mostra_lent(missatge, v=0.05):
         time.sleep(v)
     print()
 
-
 def landing_text():
     os.system('clear')
     print("Benvingut a la app de pel·lícules")
@@ -47,13 +46,6 @@ def landing_text():
     input("Prem la tecla 'Enter' per a continuar")
     os.system('clear')
 
-def mostra_lent(missatge, v=0.05):
-    for c in missatge:
-        print(c, end='')
-        sys.stdout.flush()
-        time.sleep(v)
-    print()
-
 def mostra_llista(llistapelicula):
     os.system('clear')
     mostra_lent(json.dumps(json.loads(llistapelicula.toJSON()), indent=4), v=0.01)
@@ -61,59 +53,42 @@ def mostra_llista(llistapelicula):
 def mostra_seguents(llistapelicula):
     os.system('clear')
 
-
-def mostra_menu():
-    print("0.- Surt de l'aplicació.")
-    print("1.- Mostra les primeres 10 pel·lícules")
-
-
 def mostra_menu_next10():
-    print("0.- Surt de l'aplicació.")
-    print("2.- Mostra les següents 10 pel·lícules")
+    print("0.- Surt de l'aplicació.\n2.- Mostra les següents 10 pel·lícules")
 
-
-def procesa_opcio(context):
-    return {
-        "0": lambda ctx : mostra_lent("Fins la propera"),
-        "1": lambda ctx : mostra_llista(ctx['llistapelis'])
-    }.get(context["opcio"], lambda ctx : mostra_lent("opcio incorrecta!!!"))(context)
-
-def database_read(id:int):
-    logging.basicConfig(filename='pelicules.log', encoding='utf-8', level=logging.DEBUG)
-    la_meva_configuracio = #falta codi
-    persistencies = #falta codi
-    films = Llistapelis(
-        persistencia_pelicula=
-    )
-    films. #falta codi
+def database_read(opt:int, id:int = None, any:int = None):
+    logging.basicConfig(filename = 'pelicules.log', encoding = 'utf-8', level = logging.DEBUG)
+    la_meva_configuracio = get_configuracio(RUTA_FITXER_CONFIGURACIO)
+    persistencia = get_persistencies(la_meva_configuracio)
+    films = Llistapelis(persistencia)
+    films.llegeix_de_disc(opt, id)
     return films
 
 def bucle_principal(context):
     opcio = None
-    
-    mostra_menu()
-
+    print("0.- Surt de l'aplicació.\n1.- Mostra pel·lícules")
     while opcio != '0':
         opcio = input("Selecciona una opció: ")
-        context["opcio"] = opcio
-        
-        if context["opcio"] == '1':
-            id = None
-            films = database_read(id)
+        opcio = opcio
+        if opcio == '1':
+            print("1.- Mostra les primeres 10 pel·lícules\n2.- Mostra pel·lícules per any")
+            opcio = input("Selecciona una opció: ")
+            opcio = opcio
+            if opcio == '1':
+                id = input("Introduiex la id per la que vols començar: ")
+                films = database_read(opcio, id = id)
+            elif opcio == '2':
+                any = input("Introduiex un any per mostrar les pel·lícules d'aquest: ")
+                films = database_read(opcio, any = any)
             context["llistapelis"] = films
-
-        elif context["opcio"] == '2':
+        elif opcio == '2':
             pass
-            #falta codi
-        procesa_opcio(context)
+        print("Opció incorrecta")
 
-        #falta codi
 
 
 def main():
-    context = {
-        "llistapelis": None
-    }
+    context = {"llistapelis": None}
     landing_text()
     bucle_principal(context)
 
