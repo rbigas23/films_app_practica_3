@@ -60,14 +60,14 @@ def database_read(opt:int, id:int = None, any:int = None):
     logging.basicConfig(filename = 'pelicules.log', encoding = 'utf-8', level = logging.DEBUG)
     la_meva_configuracio = get_configuracio(RUTA_FITXER_CONFIGURACIO)
     persistencia = get_persistencies(la_meva_configuracio)
-    films = Llistapelis(persistencia)
-    films.llegeix_de_disc(opt, id)
+    films = Llistapelis(persistencia["pelicula"])
+    films.llegeix_de_disc(opt, id, any)
     return films
 
 def bucle_principal(context):
     opcio = None
-    print("0.- Surt de l'aplicació.\n1.- Mostra pel·lícules")
     while opcio != '0':
+        print("0.- Surt de l'aplicació.\n1.- Mostra pel·lícules")
         opcio = input("Selecciona una opció: ")
         opcio = opcio
         if opcio == '1':
@@ -80,10 +80,12 @@ def bucle_principal(context):
             elif opcio == '2':
                 any = input("Introduiex un any per mostrar les pel·lícules d'aquest: ")
                 films = database_read(opcio, any = any)
-            context["llistapelis"] = films
+                context["llistapelis"] = films
+                print(films)
         elif opcio == '2':
             pass
-        print("Opció incorrecta")
+        else:
+            print("Opció incorrecta")
 
 
 

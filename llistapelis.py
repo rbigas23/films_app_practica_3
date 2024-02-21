@@ -10,7 +10,6 @@ class Llistapelis():
         self._pelicules = List[Pelicula]
         self._ult_id = 0
         self._persistencia_pelicula:IPersistencia_pelicula = persistencia_pelicula
-        print(f"AQUI: {type(self._persistencia_pelicula)}")
         
     @property
     def pelicules(self) -> List[Pelicula]:
@@ -37,11 +36,12 @@ class Llistapelis():
         return json.dumps(self_dict)
 
     def llegeix_de_disc(self, opt:int, id:int = None, any:int = None):
-        if opt == 1:
+        if opt == '1':
+            self._pelicules = self._persistencia_pelicula.llegeix(any)
+        else:
             self._ult_id = id
             self._pelicules = self._persistencia_pelicula.totes_pag(self._ult_id)
-        else:
-            self._pelicules = self._persistencia_pelicula.llegeix(any)
+            
 
 
 
