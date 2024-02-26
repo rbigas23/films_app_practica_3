@@ -37,11 +37,8 @@ class Llistapelis():
 
     def llegeix_de_disc(self, opt:int, id:int = None, any:int = None):
         if opt == '1':
+            self._pelicules = self._persistencia_pelicula.totes_pag(id)
+            self._ult_id = int(id) + 9
+        elif opt == '2':
             self._pelicules = self._persistencia_pelicula.llegeix(any)
-        else:
-            self._ult_id = id
-            self._pelicules = self._persistencia_pelicula.totes_pag(self._ult_id)
-            
-
-
-
+ 

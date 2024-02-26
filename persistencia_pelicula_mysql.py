@@ -48,12 +48,13 @@ class Persistencia_pelicula_mysql(IPersistencia_pelicula):
     
     def totes_pag(self, id:int) -> List[Pelicula]:
         cursor = self._conn.cursor()
-        query = f"SELECT * FROM PELICULA WHERE ID > {id} LIMIT 10"
+        query = f"SELECT * FROM PELICULA WHERE ID >= {id} LIMIT 10"
         cursor.execute(query)
         result = cursor.fetchall()
-        pelis_list = List[Pelicula]
+        pelis_list = []
         for peli in result:
-            pelis_list.append(Pelicula(peli[1], peli[2], peli[3], peli[4]))
+            print(Pelicula(peli[1], peli[2], peli[3], peli[4], self, peli[0]))
+            pelis_list.append(Pelicula(peli[1], peli[2], peli[3], peli[4], self, peli[0]))
         return pelis_list
     
     def desa(self, pelicula: Pelicula) -> Pelicula:
@@ -66,6 +67,7 @@ class Persistencia_pelicula_mysql(IPersistencia_pelicula):
     
     def llegeix(self, any: int) -> List[Pelicula]:
         cursor = self._conn.cursor()
+        print(f"AQUIII: {any}")
         query = f"SELECT * FROM PELICULA WHERE ANYO LIKE '{any}'"
         cursor.execute(query)
         result = cursor.fetchall()

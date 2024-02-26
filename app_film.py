@@ -30,7 +30,7 @@ def get_persistencies(conf: dict) -> dict:
             'pelicula': None
         }
     
-def mostra_lent(missatge, v=0.05):
+def mostra_lent(missatge, v=0.02):
     for c in missatge:
         print(c, end='')
         sys.stdout.flush()
@@ -69,23 +69,31 @@ def bucle_principal(context):
     while opcio != '0':
         print("0.- Surt de l'aplicació.\n1.- Mostra pel·lícules")
         opcio = input("Selecciona una opció: ")
-        opcio = opcio
+        os.system('clear')
         if opcio == '1':
             print("1.- Mostra les primeres 10 pel·lícules\n2.- Mostra pel·lícules per any")
             opcio = input("Selecciona una opció: ")
-            opcio = opcio
+            os.system('clear')
             if opcio == '1':
                 id = input("Introduiex la id per la que vols començar: ")
                 films = database_read(opcio, id = id)
+                context["llistapelis"] = films
+                os.system('clear')
+                print(films)
+                input("Prem la tecla 'Enter' per a continuar")
+                os.system('clear')
             elif opcio == '2':
                 any = input("Introduiex un any per mostrar les pel·lícules d'aquest: ")
+                os.system('clear')
                 films = database_read(opcio, any = any)
-                context["llistapelis"] = films
                 print(films)
+                context["llistapelis"] = films              
+                input("Prem la tecla 'Enter' per a continuar")
         elif opcio == '2':
             pass
-        else:
+        elif opcio != '0':
             print("Opció incorrecta")
+    print("Ha sigut un plaer, adéu!")
 
 
 
