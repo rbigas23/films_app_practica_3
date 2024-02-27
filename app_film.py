@@ -56,18 +56,23 @@ def mostra_seguents(llistapelicula):
 def mostra_menu_next10():
     print("0.- Surt de l'aplicació.\n2.- Mostra les següents 10 pel·lícules")
 
-def database_read(opt:int, id:int = None, any:int = None):
-    logging.basicConfig(filename = 'pelicules.log', encoding = 'utf-8', level = logging.DEBUG)
+def database_read(opt:str, id:int= None, any:int = None):
     la_meva_configuracio = get_configuracio(RUTA_FITXER_CONFIGURACIO)
     persistencia = get_persistencies(la_meva_configuracio)
     films = Llistapelis(persistencia["pelicula"])
     films.llegeix_de_disc(opt, id, any)
     return films
 
+def database_update(opt:str, peli_dict:dict = None, update_dict:dict = None, id:int = None) -> bool:
+    la_meva_configuracio = get_configuracio(RUTA_FITXER_CONFIGURACIO)
+    persistencia = get_persistencies(la_meva_configuracio)
+    films = Llistapelis(persistencia["pelicula"])
+    if (films.escriu_al_disc(opt, peli_dict, update_dict, id)): return True
+
 def bucle_principal(context):
     opcio = None
     while opcio != '0':
-        print("0.- Surt de l'aplicació.\n1.- Mostra pel·lícules")
+        print("0.- Surt de l'aplicació.\n1.- Mostra pel·lícules\n2.- Insereix un registre\n3.- Modifica un registre")
         opcio = input("Selecciona una opció: ")
         os.system('clear')
         if opcio == '1':
@@ -75,22 +80,45 @@ def bucle_principal(context):
             opcio = input("Selecciona una opció: ")
             os.system('clear')
             if opcio == '1':
-                id = input("Introduiex la id per la que vols començar: ")
-                films = database_read(opcio, id = id)
-                context["llistapelis"] = films
-                os.system('clear')
-                print(films)
-                input("Prem la tecla 'Enter' per a continuar")
-                os.system('clear')
+                data = None
+                sub_opcio = None
+                while sub_opcio != '0':
+                    opcio = '1'
+                    if data:
+                        id = data.ult_id
+                    else:
+                        id = 1
+                    data = database_read(opcio, id = id)
+                    context["llistapelis"] = data.toJSON()
+                    sub_opcio = input("Prem la tecla 'ENTER' per a continuar o introduiex un 0 per acabar: ")
+                    os.system('clear')
             elif opcio == '2':
                 any = input("Introduiex un any per mostrar les pel·lícules d'aquest: ")
                 os.system('clear')
                 films = database_read(opcio, any = any)
                 print(films)
-                context["llistapelis"] = films              
+                context["llistapelis"] = films   
                 input("Prem la tecla 'Enter' per a continuar")
+                os.system('clear')
         elif opcio == '2':
-            pass
+            print("Insereix les dades de la pel·lícula:")
+            peli_dict = {"titol": None, "any":None, "puntuacio":None, "vots":None}
+            peli_dict["titol"] = input("Introdueix el títol: ")
+            peli_dict["any"] = input("Introdueix l'any: ")
+            peli_dict["puntuacio"] = input("Introdueix la puntuacio: ")
+            peli_dict["vots"] = input("Introdueix el vots: ")
+            if database_update(opt = "create", peli_dict = peli_dict): print("Pel·lícula inserida correctament")
+            input("Prem la tecla 'Enter' per a continuar")
+            os.system('clear')
+        elif opcio == '3': # S'ha de modificar
+            id = input("Indica la ID de pel·lícula que vols canviar:")
+            update_opt = input("Indica quin atribut vols modificar (titol, any, puntuació o vots):")
+            update_value = input("Indica el nou valor de l'atribut:")
+            info = {"opt":update_opt, "value": update_value}
+            # print("APP: " + info)
+            if database_update(opt = "update", update_dict = info, id = id): print("Pel·lícula inserida correctament")
+            input("Prem la tecla 'Enter' per a continuar")
+            os.system('clear')
         elif opcio != '0':
             print("Opció incorrecta")
     print("Ha sigut un plaer, adéu!")

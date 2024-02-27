@@ -46,7 +46,7 @@ class Persistencia_pelicula_mysql(IPersistencia_pelicula):
             resultat.append(pelicula)
         return resultat
     
-    def totes_pag(self, id:int) -> List[Pelicula]:
+    def totes_pag(self, id:int):
         cursor = self._conn.cursor()
         query = f"SELECT * FROM PELICULA WHERE ID >= {id} LIMIT 10"
         cursor.execute(query)
@@ -57,13 +57,13 @@ class Persistencia_pelicula_mysql(IPersistencia_pelicula):
             pelis_list.append(Pelicula(peli[1], peli[2], peli[3], peli[4], self, peli[0]))
         return pelis_list
     
-    def desa(self, pelicula: Pelicula) -> Pelicula:
+    def desa(self, pelicula: Pelicula) -> bool:
         cursor = self._conn.cursor()
-        query = f"INSERT INTO PELICULA (TITULO, ANYO, PUNTUACION, VOTOS) VALUES ({pelicula.titol}, {pelicula.any}, {pelicula.puntuacio}, {pelicula.vots});"
+        query = f"INSERT INTO PELICULA (TITULO, ANYO, PUNTUACION, VOTOS) VALUES ('{pelicula.titol}', {pelicula.any}, {pelicula.puntuacio}, {pelicula.vots});"
         cursor.execute(query)
         self._conn.commit()
         cursor.close()
-        return pelicula
+        return True
     
     def llegeix(self, any: int) -> List[Pelicula]:
         cursor = self._conn.cursor()
@@ -74,21 +74,21 @@ class Persistencia_pelicula_mysql(IPersistencia_pelicula):
         pelis_list = []
         if result:
             for peli in result:
-                pelis_list.append(Pelicula(titol = str(peli[1]), any = str(peli[2]), puntuacio = str(peli[3]), vots = str(peli[4]), persistencia = self))
+                pelis_list.append(Pelicula(id = str(peli[0]), titol = str(peli[1]), any = str(peli[2]), puntuacio = str(peli[3]), vots = str(peli[4]), persistencia = self))
             return pelis_list
         else:
             print("No existeixen pel·ícules d'aquest any a la base de dades.")
 
-    def canvia(self, info:dict, pelicula:Pelicula) -> Pelicula:
+    def canvia(self, info:dict, id:int) -> bool:
         cursor = self._conn.cursor()
         if info["opt"] == "titol":
-            query = f"UPDATE PELICULA SET TITULO={info['value']} WHERE id = {pelicula.id}"
+            query = f"UPDATE PELICULA SET TITULO='{info['value']}' WHERE id = {id}"
         elif info["opt"] == "any":
-            query = f"UPDATE PELICULA SET ANYO={info['value']} WHERE id = {pelicula.id}"
-        elif info["opt"] == "punt":
-            query = f"UPDATE PELICULA SET PUNTUACION={info['value']} WHERE id = {pelicula.id}"
+            query = f"UPDATE PELICULA SET ANYO={info['value']} WHERE id = {id}"
+        elif info["opt"] == "puntuacio":
+            query = f"UPDATE PELICULA SET PUNTUACION={info['value']} WHERE id = {id}"
         elif info["opt"] == "vots":
-            query = f"UPDATE PELICULA SET VOTOS={info['value']} WHERE id = {pelicula.id}"
+            query = f"UPDATE PELICULA SET VOTOS={info['value']} WHERE id = {id}"
         cursor.execute(query)
         self._conn.commit()
-        return pelicula
+        return True

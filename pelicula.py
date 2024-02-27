@@ -3,7 +3,7 @@
 import json
 
 class Pelicula:
-    def __init__(self, titol: str, any: int, puntuacio: float , vots: int, persistencia,id=None) -> None:
+    def __init__(self, titol: str, any: int, puntuacio: float , vots: int, persistencia, id = None) -> None:
         self._titol = titol
         self._any = any
         self._puntuacio = puntuacio
