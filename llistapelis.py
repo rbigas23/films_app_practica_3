@@ -24,7 +24,7 @@ class Llistapelis():
         return self._persistencia_pelicula
     
     def __repr__(self):
-        return self.toJSON()
+        return self.toJSON() if self._pelicules else "No existeixen pel·ícules d'aquest any a la base de dades."
     
     def toJSON(self):
         pelicules_list = []
@@ -44,5 +44,7 @@ class Llistapelis():
         if opt == "create":
             peli = Pelicula(**peli_dict, persistencia = self._persistencia_pelicula)
             if self._persistencia_pelicula.desa(peli): return True
+            else: return False
         elif opt == "update":
             if self._persistencia_pelicula.canvia(update_dict, id): return True
+            else: return False

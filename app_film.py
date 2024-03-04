@@ -110,12 +110,11 @@ def bucle_principal(context):
             if database_update(opt = "create", peli_dict = peli_dict): print("Pel·lícula inserida correctament")
             input("Prem la tecla 'Enter' per a continuar")
             os.system('clear')
-        elif opcio == '3': # S'ha de modificar
-            id = input("Indica la ID de pel·lícula que vols canviar:")
-            update_opt = input("Indica quin atribut vols modificar (titol, any, puntuació o vots):")
-            update_value = input("Indica el nou valor de l'atribut:")
+        elif opcio == '3':
+            id = input("Indica la ID de pel·lícula que vols canviar: ")
+            update_opt = input("Indica quin atribut vols modificar (titol, any, puntuació o vots): ")
+            update_value = input("Indica el nou valor de l'atribut: ")
             info = {"opt":update_opt, "value": update_value}
-            # print("APP: " + info)
             if database_update(opt = "update", update_dict = info, id = id): print("Pel·lícula inserida correctament")
             input("Prem la tecla 'Enter' per a continuar")
             os.system('clear')

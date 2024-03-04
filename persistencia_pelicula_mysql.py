@@ -67,7 +67,6 @@ class Persistencia_pelicula_mysql(IPersistencia_pelicula):
     
     def llegeix(self, any: int) -> List[Pelicula]:
         cursor = self._conn.cursor()
-        print(f"AQUIII: {any}")
         query = f"SELECT * FROM PELICULA WHERE ANYO LIKE '{any}'"
         cursor.execute(query)
         result = cursor.fetchall()
@@ -76,8 +75,6 @@ class Persistencia_pelicula_mysql(IPersistencia_pelicula):
             for peli in result:
                 pelis_list.append(Pelicula(id = str(peli[0]), titol = str(peli[1]), any = str(peli[2]), puntuacio = str(peli[3]), vots = str(peli[4]), persistencia = self))
             return pelis_list
-        else:
-            print("No existeixen pel·ícules d'aquest any a la base de dades.")
 
     def canvia(self, info:dict, id:int) -> bool:
         cursor = self._conn.cursor()
